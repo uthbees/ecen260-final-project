@@ -7,21 +7,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8892abd-44f7-4dcf-bf0b-6807b5235f80" name="Changes" comment="Get blinky working with HAL">
-      <change afterPath="$PROJECT_DIR$/cortex-m4-binary/Cargo.lock" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cortex-m4-binary/Cargo.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cortex-m4-binary/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cortex-m4-binary/build.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.cargo/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/cortex-m4-binary/.cargo/config.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ecen260-final-project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ecen260-final-project.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/memory.x" beforeDir="false" afterPath="$PROJECT_DIR$/cortex-m4-binary/memory.x" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cortex-m4-binary/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/cortex-m4-binary/src/main.rs" afterDir="false" />
-    </list>
+    <list default="true" id="f8892abd-44f7-4dcf-bf0b-6807b5235f80" name="Changes" comment="Use a workspace to hold all component programs" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,7 +70,7 @@
     &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
     &quot;org.rust.cargo.project.model.impl.CargoExternalSystemProjectAware.subscribe.first.balloon&quot;: &quot;&quot;,
     &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;language.rust.cargo.check&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.typescriptcompiler&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -97,7 +83,7 @@
     <option name="runOnTheFly" value="true" />
     <option name="tool" value="Clippy" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Cargo.Run esp32-binary">
     <configuration name="Run cortex-m4-binary" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="dev" />
       <option name="command" value="run --package cortex-m4-binary --bin cortex-m4-binary" />
@@ -116,6 +102,47 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Run esp32-binary" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="buildProfileId" value="dev" />
+      <option name="command" value="run --package esp32-binary --bin esp32-binary" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/esp32-binary" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run web-server" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="buildProfileId" value="dev" />
+      <option name="command" value="run --package web-server --bin web-server" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/web-server" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Run cortex-m4-binary" />
+      <item itemvalue="Cargo.Run esp32-binary" />
+      <item itemvalue="Cargo.Run web-server" />
+    </list>
   </component>
   <component name="RustProjectSettings">
     <option name="rustcTarget" value="thumbv7em-none-eabi" />
@@ -133,6 +160,7 @@
       <workItem from="1740807863841" duration="84000" />
       <workItem from="1741026143857" duration="1135000" />
       <workItem from="1741027287053" duration="575000" />
+      <workItem from="1741027870566" duration="260000" />
     </task>
     <task id="LOCAL-00001" summary="Get blinky working with HAL">
       <option name="closed" value="true" />
@@ -142,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740807763941</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Use a workspace to hold all component programs">
+      <option name="closed" value="true" />
+      <created>1741028113634</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741028113634</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,6 +186,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Get blinky working with HAL" />
-    <option name="LAST_COMMIT_MESSAGE" value="Get blinky working with HAL" />
+    <MESSAGE value="Use a workspace to hold all component programs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Use a workspace to hold all component programs" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
