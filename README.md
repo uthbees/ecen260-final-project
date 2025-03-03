@@ -1,4 +1,8 @@
-Embedded Rust for the NUCLEO-L476RG board. (Will not work with other boards without adjustments.)
+### Requirements
+
+- A NUCLEO-L476RG board.
+- A <> board.
+- A web server.
 
 ### Setting up
 
@@ -9,11 +13,11 @@ when setting up a new environment:
 git config --local core.hooksPath .githooks
 ```
 
-### Requirements
+### Deploying
 
-Install probe-rs: https://probe.rs/docs/getting-started/installation/
+- Flash the `cortex-m4-binary` program onto the NUCLEO-L476RG board.
+- Flash the `esp32-binary` program onto the <> board.
+- Connect the two boards and their components according to the schematic.
+- Put the `web_server` and `web_client` programs onto your web server (and run the `web_server` program).
 
-Connect the board via USB, then run with cargo:
-```bash
-cargo run
-```
+See the README files of each individual program for more detailed information.

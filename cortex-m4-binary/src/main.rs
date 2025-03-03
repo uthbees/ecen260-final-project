@@ -7,7 +7,7 @@ use cortex_m_rt::entry;
 
 #[entry]
 fn main() -> ! {
-    ecen260_final_project::run();
+    cortex_m4_binary::run();
 
     #[allow(clippy::empty_loop)]
     loop {}
