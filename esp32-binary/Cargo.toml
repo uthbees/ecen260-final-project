@@ -3,4 +3,14 @@ name = "esp32-binary"
 version = "0.1.0"
 edition.workspace = true
 
+
+[features]
+default = []
+
+experimental = ["esp-idf-svc/experimental"]
+
 [dependencies]
+esp-idf-svc = { version = "0.51", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
+
+[build-dependencies]
+embuild = "0.33"

@@ -1,7 +1,7 @@
 ### Requirements
 
 - A NUCLEO-L476RG board.
-- An ESP-32 board.
+- A flashable board with an ESP-32-S2 chip. (Other ESP-32 variants might work as well, or they might require adjustments.)
 - A web server.
 
 ### Setting up

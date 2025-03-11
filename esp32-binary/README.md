@@ -2,7 +2,7 @@ This program goes on the ESP-32 board.
 
 ### Requirements
 
-Install probe-rs: https://probe.rs/docs/getting-started/installation/
+Follow the directions here: https://github.com/esp-rs/esp-idf-template?tab=readme-ov-file#prerequisites
 
 Connect the board via USB, then run with cargo:
 ```bash

@@ -1,4 +1,5 @@
 /target
+.embuild
 
 # Linux temporary files
 *~
