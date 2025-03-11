@@ -1,4 +1,4 @@
-This program goes on the <> board. (Will not work with other boards without adjustments.)
+This program goes on the ESP-32 board.
 
 ### Requirements
 

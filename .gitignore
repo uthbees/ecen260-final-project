@@ -2,3 +2,8 @@
 
 # Linux temporary files
 *~
+
+# Jetbrains stuff
+**/.idea/workspace.xml
+**/.idea/usage.statistics.xml
+**/.idea/shelf
