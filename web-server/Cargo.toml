@@ -6,3 +6,5 @@ version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
+axum = "0.8.1"
+tokio = { version = "1.44.1", features = ["macros", "rt-multi-thread"] }
