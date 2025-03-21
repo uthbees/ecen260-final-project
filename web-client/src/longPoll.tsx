@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import { SetStateAction } from 'react';
+import { AppError, AppErrorReason } from './types.ts';
 
 const MAX_CONSECUTIVE_FAILURES = 3;
 // The amount of time to wait between one (non-errored) request ending and the next starting.
@@ -42,10 +43,6 @@ async function handlePollResponse(
     setError: SetErrorCallback,
     state: LongPollState,
 ): Promise<LongPollState> {
-    // Clear the error, in case the previous request failed. If something goes wrong here, we'll switch to showing
-    // that error instead soon, but otherwise, we don't want to show an error since we had a successful poll.
-    setError(null);
-
     if (!response.ok) {
         return await handleFailedRequest(
             `Request failed with status code ${response.status}.`,
@@ -88,6 +85,13 @@ async function handlePollResponse(
         }
 
         state.consecutiveFailures = 0;
+        // Clear the error if it's from the previous request failing.
+        setError((prevState) => {
+            if (prevState?.reason === AppErrorReason.LONG_POLLING_REQUEST) {
+                return null;
+            }
+            return prevState;
+        });
         // Wait for a little bit before polling again.
         await delay(POLL_DELAY_MS);
     } catch (error) {
@@ -119,12 +123,10 @@ async function handleFailedRequest(
             'Maximum consecutive failures reached, reload the page to try again.';
     }
 
-    setError(
-        <>
-            <div>{baseMessage}</div>
-            <div>{secondLine}</div>
-        </>,
-    );
+    setError({
+        message: [baseMessage, secondLine],
+        reason: AppErrorReason.LONG_POLLING_REQUEST,
+    });
 
     // wait for between 3 and 6 seconds
     const jitter = Math.random() * 3;
@@ -138,7 +140,7 @@ async function delay(milliseconds: number) {
 }
 
 type HandleDataUpdateCallback = (newData: Record<string, unknown>) => void;
-type SetErrorCallback = (error: ReactNode | null) => void;
+type SetErrorCallback = (error: SetStateAction<AppError | null>) => void;
 
 interface LongPollState {
     consecutiveFailures: number;
