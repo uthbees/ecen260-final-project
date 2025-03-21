@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { Alert, Button, Stack, TextField, Typography } from '@mui/material';
 import { API_URL } from './constants.ts';
 import { useInitialSetup } from './useInitialSetup.ts';
@@ -9,32 +9,46 @@ export default function App() {
     const [textFieldValue, setTextFieldValue] = useState<number>(0);
     const [errorMessage, setErrorMessage] = useState<ReactNode | null>(null);
 
+    const handleUpdateTemperature = useCallback(
+        (newData: Record<string, unknown>) => {
+            let result;
+
+            if (!('temperature' in newData)) {
+                setErrorMessage(
+                    `Server gave invalid response for temperature: ${JSON.stringify(newData)}`,
+                );
+                return;
+            }
+
+            const newTemperature = newData.temperature;
+
+            if (typeof newTemperature === 'number') {
+                result = newTemperature;
+            } else if (typeof newTemperature === 'string') {
+                result = parseFloat(newTemperature);
+            } else {
+                setErrorMessage(
+                    `Server gave invalid response for temperature: ${JSON.stringify(newTemperature)}`,
+                );
+                return;
+            }
+
+            if (isNaN(result)) {
+                setErrorMessage(
+                    `Server response for temperature evaluated to NaN: ${JSON.stringify(newTemperature)}`,
+                );
+                return;
+            }
+
+            setTemperature(result);
+        },
+        [],
+    );
+
     useInitialSetup(() =>
         longPoll(
             `${API_URL}/temperature`,
-            (newData) => {
-                let result;
-
-                if (typeof newData === 'number') {
-                    result = newData;
-                } else if (typeof newData === 'string') {
-                    result = parseFloat(newData);
-                } else {
-                    setErrorMessage(
-                        `Server gave invalid response for temperature: ${JSON.stringify(newData)}`,
-                    );
-                    return;
-                }
-
-                if (isNaN(result)) {
-                    setErrorMessage(
-                        `Server response for temperature evaluated to NaN: ${JSON.stringify(newData)}`,
-                    );
-                    return;
-                }
-
-                setTemperature(result);
-            },
+            handleUpdateTemperature,
             setErrorMessage,
         ),
     );
@@ -67,7 +81,7 @@ export default function App() {
                     <Button
                         variant="contained"
                         onClick={() => {
-                            postTemperature(textFieldValue);
+                            postTemperature(textFieldValue, setErrorMessage);
                         }}
                     >
                         Update temperature on server
@@ -84,19 +98,27 @@ export default function App() {
                         }}
                     ></TextField>
                 </Stack>
-                <Typography>Temperature on server: {temperature}</Typography>
+                <Typography>
+                    Temperature on server:{' '}
+                    {temperature === null ? 'Loading...' : `${temperature}°F`}
+                </Typography>
             </Stack>
         </>
     );
 }
 
-function postTemperature(temperature: number) {
+function postTemperature(
+    temperature: number,
+    setErrorMessage: (errorMessage: ReactNode | null) => void,
+) {
     fetch(`${API_URL}/temperature`, {
         method: 'POST',
         body: JSON.stringify(temperature),
     }).then((response) => {
         if (!response.ok) {
-            alert('Failed to update temperature on server');
+            setErrorMessage(
+                `Failed to update temperature on server (error code ${response.status}).`,
+            );
         }
     });
 }
