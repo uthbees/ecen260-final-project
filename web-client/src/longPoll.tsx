@@ -3,7 +3,7 @@ import { AppError, AppErrorReason } from './types.ts';
 
 const MAX_CONSECUTIVE_FAILURES = 3;
 // The amount of time to wait between one (non-errored) request ending and the next starting.
-const POLL_DELAY_MS = 2000;
+const POLL_DELAY_MS = 1000;
 
 export default async function longPoll(
     url: string,
@@ -12,13 +12,13 @@ export default async function longPoll(
 ) {
     let state: LongPollState = {
         consecutiveFailures: 0,
-        lastKnownUpdateTimestamp: 0,
+        lastKnownRevisionNum: -1,
     };
 
     while (state.consecutiveFailures < MAX_CONSECUTIVE_FAILURES) {
         try {
             await fetch(
-                `${url}?last_known_update_timestamp=${state.lastKnownUpdateTimestamp}`,
+                `${url}?last_known_revision_num=${state.lastKnownRevisionNum}`,
             ).then(async (response) => {
                 state = await handlePollResponse(
                     response,
@@ -44,8 +44,11 @@ async function handlePollResponse(
     state: LongPollState,
 ): Promise<LongPollState> {
     if (!response.ok) {
+        const text = await response.text();
+        const secondHalf = text.length === 0 ? '' : `: ${text}`;
+
         return await handleFailedRequest(
-            `Request failed with status code ${response.status}.`,
+            `Request failed with status code ${response.status} (${response.statusText})${secondHalf}`,
             setError,
             state,
         );
@@ -60,27 +63,35 @@ async function handlePollResponse(
             if (
                 typeof responseJSON !== 'object' ||
                 responseJSON === null ||
-                !('update_timestamp' in responseJSON) ||
-                typeof responseJSON.update_timestamp !== 'number'
+                !('revision_num' in responseJSON) ||
+                typeof responseJSON.revision_num !== 'number'
             ) {
                 return await handleFailedRequest(
-                    "Received invalid response - failed to access 'update_timestamp' property.",
+                    "Received invalid response - failed to access 'revision_num' property.",
                     setError,
                     state,
                 );
             }
 
             if (
-                responseJSON.update_timestamp === state.lastKnownUpdateTimestamp
+                responseJSON.revision_num === state.lastKnownRevisionNum
             ) {
                 return await handleFailedRequest(
-                    "Error - 'update_timestamp' property of response is the same as the sent timestamp.",
+                    "Error - 'revision_num' property of response is the same as the sent revision.",
+                    setError,
+                    state,
+                );
+            } else if (
+                responseJSON.revision_num < state.lastKnownRevisionNum
+            ) {
+                return await handleFailedRequest(
+                    "Error - 'revision_num' property of response is less than the sent revision.",
                     setError,
                     state,
                 );
             }
 
-            state.lastKnownUpdateTimestamp = responseJSON.update_timestamp;
+            state.lastKnownRevisionNum = responseJSON.revision_num;
             handleDataUpdate(responseJSON);
         }
 
@@ -144,5 +155,5 @@ type SetErrorCallback = (error: SetStateAction<AppError | null>) => void;
 
 interface LongPollState {
     consecutiveFailures: number;
-    lastKnownUpdateTimestamp: number;
+    lastKnownRevisionNum: number;
 }

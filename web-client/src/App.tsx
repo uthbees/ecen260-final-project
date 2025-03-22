@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import { Alert, Button, Stack, TextField, Typography } from '@mui/material';
 import { API_URL } from './constants.ts';
 import { useInitialSetup } from './useInitialSetup.ts';
@@ -71,10 +71,10 @@ export default function App() {
                                       return line;
                                   }
                                   return (
-                                      <>
+                                      <Fragment key={index}>
                                           <br />
                                           {line}
-                                      </>
+                                      </Fragment>
                                   );
                               })}
                     </Alert>
