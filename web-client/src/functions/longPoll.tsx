@@ -1,5 +1,5 @@
 import { SetStateAction } from 'react';
-import { AppError, AppErrorReason } from './types.ts';
+import { AppError, AppErrorReason } from '../types/appError.ts';
 
 const MAX_CONSECUTIVE_FAILURES = 3;
 // The amount of time to wait between one (non-errored) request ending and the next starting.

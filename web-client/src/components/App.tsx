@@ -1,9 +1,9 @@
 import React, { Fragment, useCallback, useState } from 'react';
 import { Alert, Button, Stack, TextField, Typography } from '@mui/material';
-import { API_URL } from './constants.ts';
-import { useInitialSetup } from './useInitialSetup.ts';
-import longPoll from './longPoll.tsx';
-import { AppError, AppErrorReason } from './types.ts';
+import { API_URL } from '../config/apiUrl.ts';
+import { useInitialSetup } from '../hooks/useInitialSetup.ts';
+import longPoll from '../functions/longPoll.tsx';
+import { AppError, AppErrorReason } from '../types/appError.ts';
 
 export default function App() {
     const [temperature, setTemperature] = useState<number | null>(null);
