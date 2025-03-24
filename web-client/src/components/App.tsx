@@ -128,7 +128,7 @@ function postTemperature(
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(temperature),
+        body: JSON.stringify({ temperature }),
     }).then((response) => {
         if (!response.ok) {
             setError({
