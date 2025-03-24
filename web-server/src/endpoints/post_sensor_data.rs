@@ -13,7 +13,7 @@ pub async fn sensor_data_post_endpoint(
 ) {
     let mut state = context.write().await;
 
-    match state.fan_temperature.as_ref() {
+    match &mut state.fan_temperature {
         None => state.fan_temperature = Some(Temperature::new(body.temperature)),
         Some(fan_temperature) => {
             fan_temperature.set_value(body.temperature);

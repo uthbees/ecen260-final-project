@@ -18,17 +18,9 @@ pub async fn settings_get_endpoint(
 ) -> Response {
     handle_long_poll(async || {
         let settings = &context.read().await.settings;
-        let revision_num = settings.revision_num();
 
-        if revision_num > query.last_known_revision_num {
-            Some(
-                Json(UpdateResponse {
-                    revision_num,
-                    fan_activation_temp: settings.fan_activation_temp(),
-                    fan_override: settings.fan_override(),
-                })
-                .into_response(),
-            )
+        if settings.revision_num() > query.last_known_revision_num {
+            Some(Json(settings).into_response())
         } else {
             None
         }

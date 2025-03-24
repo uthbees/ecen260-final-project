@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-use std::sync::atomic::{AtomicI32, Ordering};
 use tokio::sync::RwLock;
 
 pub type ServerContext = Arc<RwLock<ServerState>>;
@@ -25,42 +24,43 @@ impl ServerState {
     }
 }
 
+#[derive(Serialize)]
 pub struct Temperature {
     /// The temperature in degrees Fahrenheit.
-    value: AtomicI32,
+    value: i32,
     /// Increments every time the value is changed.
-    revision_num: AtomicI32,
+    revision_num: i32,
 }
 
 impl Temperature {
     pub fn new(value: i32) -> Self {
         Temperature {
-            value: AtomicI32::from(value),
-            revision_num: AtomicI32::new(0),
+            value,
+            revision_num: 0,
         }
     }
 
     pub fn value(&self) -> i32 {
-        self.value.load(Ordering::SeqCst)
+        self.value
     }
 
     pub fn revision_num(&self) -> i32 {
-        self.revision_num.load(Ordering::SeqCst)
+        self.revision_num
     }
 
-    pub fn set_value(&self, value: i32) {
-        self.value.store(value, Ordering::SeqCst);
-        self.revision_num
-            .store(self.revision_num() + 1, Ordering::SeqCst);
+    pub fn set_value(&mut self, value: i32) {
+        self.value = value;
+        self.revision_num += 1;
     }
 }
 
+#[derive(Serialize)]
 pub struct Settings {
-    /// The temperature in Fahrenheit at which the fan will automatically turn on.
-    fan_activation_temp: AtomicI32,
+    /// The temperature in degrees Fahrenheit at which the fan will automatically turn on.
+    fan_activation_temp: i32,
     fan_override: FanOverride,
     /// Increments every time a setting is changed.
-    revision_num: AtomicI32,
+    revision_num: i32,
 }
 
 impl Default for Settings {
@@ -73,14 +73,14 @@ impl Settings {
     pub fn new() -> Self {
         Settings {
             // Initialize to 80 degrees.
-            fan_activation_temp: AtomicI32::new(80),
+            fan_activation_temp: 80,
             fan_override: FanOverride::None,
-            revision_num: AtomicI32::new(0),
+            revision_num: 0,
         }
     }
 
     pub fn fan_activation_temp(&self) -> i32 {
-        self.fan_activation_temp.load(Ordering::SeqCst)
+        self.fan_activation_temp
     }
 
     pub fn fan_override(&self) -> FanOverride {
@@ -88,19 +88,17 @@ impl Settings {
     }
 
     pub fn revision_num(&self) -> i32 {
-        self.revision_num.load(Ordering::SeqCst)
+        self.revision_num
     }
 
-    pub fn set_fan_activation_temp(&self, value: i32) {
-        self.fan_activation_temp.store(value, Ordering::SeqCst);
-        self.revision_num
-            .store(self.revision_num() + 1, Ordering::SeqCst);
+    pub fn set_fan_activation_temp(&mut self, value: i32) {
+        self.fan_activation_temp = value;
+        self.revision_num += 1;
     }
 
     pub fn set_fan_override(&mut self, value: FanOverride) {
         self.fan_override = value;
-        self.revision_num
-            .store(self.revision_num() + 1, Ordering::SeqCst);
+        self.revision_num += 1;
     }
 }
 
