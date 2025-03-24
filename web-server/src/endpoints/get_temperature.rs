@@ -8,22 +8,9 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::RwLock;
 
-pub enum EndpointResponse {
-    Update(UpdateResponse),
-    Empty(),
-    Err(StatusCode, String),
-}
-
-impl IntoResponse for EndpointResponse {
-    fn into_response(self) -> Response {
-        match self {
-            EndpointResponse::Update(success) => (StatusCode::OK, Json(success)).into_response(),
-            EndpointResponse::Empty() => StatusCode::OK.into_response(),
-            EndpointResponse::Err(status_code, error_message) => {
-                (status_code, Json(error_message)).into_response()
-            }
-        }
-    }
+#[derive(Deserialize)]
+pub struct EndpointQuery {
+    last_known_revision_num: i32,
 }
 
 #[derive(Serialize)]
@@ -32,15 +19,10 @@ pub struct UpdateResponse {
     temperature: i32,
 }
 
-#[derive(Deserialize)]
-pub struct EndpointQuery {
-    last_known_revision_num: i32,
-}
-
-pub async fn temperature_get_endpoint(
+pub async fn sensor_data_get_endpoint(
     query: Query<EndpointQuery>,
     state: Extension<Arc<RwLock<ServerContext>>>,
-) -> EndpointResponse {
+) -> Response {
     let one_second = Duration::from_secs(1);
 
     // Wait for updates for 20 seconds (long polling)
@@ -48,17 +30,19 @@ pub async fn temperature_get_endpoint(
         match state.read().await.fan_temperature.as_ref() {
             Some(fan_temperature) => {
                 if fan_temperature.revision_num() > query.last_known_revision_num {
-                    return EndpointResponse::Update(UpdateResponse {
+                    return Json(UpdateResponse {
                         revision_num: fan_temperature.revision_num(),
                         temperature: fan_temperature.value(),
-                    });
+                    })
+                    .into_response();
                 }
             }
             None => {
-                return EndpointResponse::Err(
+                return (
                     StatusCode::SERVICE_UNAVAILABLE,
-                    String::from("No fan connected to server."),
-                );
+                    Json(String::from("No fan connected to server.")),
+                )
+                    .into_response();
             }
         };
 
@@ -66,5 +50,5 @@ pub async fn temperature_get_endpoint(
     }
 
     // Return an empty response to avoid the request timing out
-    EndpointResponse::Empty()
+    ().into_response()
 }
