@@ -12,9 +12,7 @@ export default function App() {
 
     const handleUpdateTemperature = useCallback(
         (newData: Record<string, unknown>) => {
-            let result;
-
-            if (!('temperature' in newData)) {
+            if (!validateGetSensorDataResponse(newData)) {
                 setError({
                     message: `Server gave invalid response for temperature: ${JSON.stringify(newData)}`,
                     reason: AppErrorReason.MISC,
@@ -22,21 +20,9 @@ export default function App() {
                 return;
             }
 
-            const newTemperature = newData.temperature;
+            const newTemperature = newData.value;
 
-            if (typeof newTemperature === 'number') {
-                result = newTemperature;
-            } else if (typeof newTemperature === 'string') {
-                result = parseFloat(newTemperature);
-            } else {
-                setError({
-                    message: `Server gave invalid response for temperature: ${JSON.stringify(newTemperature)}`,
-                    reason: AppErrorReason.MISC,
-                });
-                return;
-            }
-
-            if (isNaN(result)) {
+            if (isNaN(newTemperature)) {
                 setError({
                     message: `Server response for temperature evaluated to NaN: ${JSON.stringify(newTemperature)}`,
                     reason: AppErrorReason.MISC,
@@ -44,7 +30,7 @@ export default function App() {
                 return;
             }
 
-            setTemperature(result);
+            setTemperature(newTemperature);
         },
         [],
     );
@@ -105,7 +91,7 @@ export default function App() {
                             event: React.ChangeEvent<HTMLInputElement>,
                         ) => {
                             setTextFieldValue(
-                                event.target.value as unknown as number,
+                                parseInt(event.target.value),
                             );
                         }}
                     ></TextField>
@@ -116,6 +102,24 @@ export default function App() {
                 </Typography>
             </Stack>
         </>
+    );
+}
+
+interface GetSensorDataResponse {
+    value: number;
+    revision_num: number;
+}
+
+function validateGetSensorDataResponse(
+    response: unknown,
+): response is GetSensorDataResponse {
+    return (
+        typeof response === 'object' &&
+        response !== null &&
+        'value' in response &&
+        typeof response.value === 'number' &&
+        'revision_num' in response &&
+        typeof response.revision_num === 'number'
     );
 }
 
