@@ -3,7 +3,12 @@ cargo-features = ["edition2024"]
 [package]
 name = "esp32-binary"
 version = "0.1.0"
-edition.workspace = true
+edition = "2024"
+
+[profile.release]
+lto = true
+codegen-units = 1
+overflow-checks = true
 
 [features]
 default = []

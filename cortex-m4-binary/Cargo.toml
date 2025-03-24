@@ -1,9 +1,7 @@
-cargo-features = ["edition2024"]
-
 [package]
 name = "cortex-m4-binary"
 version = "0.1.0"
-edition.workspace = true
+edition = "2024"
 
 [[bin]]
 name = "cortex-m4-binary"
@@ -15,6 +13,11 @@ bench = false
 test = false
 doctest = false
 bench = false
+
+[profile.release]
+lto = true
+codegen-units = 1
+overflow-checks = true
 
 [lints.clippy]
 all = { level = "warn", priority = -1 }

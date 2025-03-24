@@ -108,7 +108,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "cortex_m4_binary"
+name = "cortex-m4-binary"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
