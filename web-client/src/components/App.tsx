@@ -12,7 +12,7 @@ export default function App() {
 
     const handleUpdateTemperature = useCallback(
         (newData: Record<string, unknown>) => {
-            if (!validateGetSensorDataResponse(newData)) {
+            if (!getSensorDataResponseIsValid(newData)) {
                 setError({
                     message: `Server gave invalid response for temperature: ${JSON.stringify(newData)}`,
                     reason: AppErrorReason.MISC,
@@ -110,7 +110,7 @@ interface GetSensorDataResponse {
     revision_num: number;
 }
 
-function validateGetSensorDataResponse(
+function getSensorDataResponseIsValid(
     response: unknown,
 ): response is GetSensorDataResponse {
     return (
