@@ -4,7 +4,7 @@ use rand::{Rng, rng};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-pub async fn temperature_post_endpoint(state: Extension<Arc<RwLock<ServerContext>>>) {
+pub async fn sensor_data_post_endpoint(state: Extension<Arc<RwLock<ServerContext>>>) {
     let mut state = state.write().await;
 
     // TODO: Instead of assigning a random value like this, read the request body and assign the value from there.

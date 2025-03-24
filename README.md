@@ -1,7 +1,8 @@
 ### Requirements
 
 - A NUCLEO-L476RG board.
-- A flashable board with an ESP-32-S2 chip. (Other ESP-32 variants might work as well, or they might require adjustments.)
+- A flashable board with an ESP-32-S2 chip. (Other ESP-32 variants might work as well, or they might require
+  adjustments.)
 - A web server.
 
 ### Setting up
@@ -21,3 +22,9 @@ git config --local core.hooksPath .githooks
 - Put the `web_server` and `web_client` programs onto your web server (and run the `web_server` program).
 
 See the README files of each individual program for more detailed information.
+
+### Limitations
+
+In order to avoid scope creep, the project was not designed to be able to handle multiple connected web
+clients/microcontrollers at once. The expected setup is to have one microcontroller and either zero or one web clients
+connected to the server at any given time.
