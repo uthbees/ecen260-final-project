@@ -1,4 +1,4 @@
-use serde::{Serialize, Serializer};
+use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicI32, Ordering};
 use tokio::sync::RwLock;
@@ -91,14 +91,20 @@ impl Settings {
         self.revision_num.load(Ordering::SeqCst)
     }
 
-    pub fn set_activation_temp(&self, value: i32) {
+    pub fn set_fan_activation_temp(&self, value: i32) {
         self.fan_activation_temp.store(value, Ordering::SeqCst);
+        self.revision_num
+            .store(self.revision_num() + 1, Ordering::SeqCst);
+    }
+
+    pub fn set_fan_override(&mut self, value: FanOverride) {
+        self.fan_override = value;
         self.revision_num
             .store(self.revision_num() + 1, Ordering::SeqCst);
     }
 }
 
-#[derive(Copy, Clone, Serialize)]
+#[derive(Copy, Clone, Serialize, Deserialize)]
 pub enum FanOverride {
     None,
     On,

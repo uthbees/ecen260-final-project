@@ -1,18 +1,22 @@
 use crate::server_context::{ServerContext, Temperature};
-use axum::Extension;
-use rand::{Rng, rng};
+use axum::{Extension, Json};
+use serde::Deserialize;
 
-pub async fn sensor_data_post_endpoint(context: Extension<ServerContext>) {
+#[derive(Deserialize)]
+pub struct PostSensorData {
+    temperature: i32,
+}
+
+pub async fn sensor_data_post_endpoint(
+    context: Extension<ServerContext>,
+    Json(body): Json<PostSensorData>,
+) {
     let mut state = context.write().await;
 
-    // TODO: Instead of assigning a random value like this, read the request body and assign the value from there.
-    let mut rng = rng();
-    let new_value = rng.random_range(1..=10);
-
     match state.fan_temperature.as_ref() {
-        None => state.fan_temperature = Some(Temperature::new(new_value)),
+        None => state.fan_temperature = Some(Temperature::new(body.temperature)),
         Some(fan_temperature) => {
-            fan_temperature.set_value(new_value);
+            fan_temperature.set_value(body.temperature);
         }
     }
 }
