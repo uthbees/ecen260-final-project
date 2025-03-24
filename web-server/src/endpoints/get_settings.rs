@@ -1,4 +1,4 @@
-use crate::server_context::ServerContext;
+use crate::server_context::{FanOverride, ServerContext};
 use crate::{GetEndpointsQuery, handle_long_poll};
 use axum::extract::Query;
 use axum::response::{IntoResponse, Response};
@@ -8,7 +8,8 @@ use serde::Serialize;
 #[derive(Serialize)]
 pub struct UpdateResponse {
     revision_num: i32,
-    activation_temp: i32,
+    fan_activation_temp: i32,
+    fan_override: FanOverride,
 }
 
 pub async fn settings_get_endpoint(
@@ -23,7 +24,8 @@ pub async fn settings_get_endpoint(
             Some(
                 Json(UpdateResponse {
                     revision_num,
-                    activation_temp: settings.activation_temp(),
+                    fan_activation_temp: settings.fan_activation_temp(),
+                    fan_override: settings.fan_override(),
                 })
                 .into_response(),
             )

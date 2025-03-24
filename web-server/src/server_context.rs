@@ -1,3 +1,4 @@
+use serde::{Serialize, Serializer};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicI32, Ordering};
 use tokio::sync::RwLock;
@@ -56,7 +57,8 @@ impl Temperature {
 
 pub struct Settings {
     /// The temperature in Fahrenheit at which the fan will automatically turn on.
-    activation_temp: AtomicI32,
+    fan_activation_temp: AtomicI32,
+    fan_override: FanOverride,
     /// Increments every time a setting is changed.
     revision_num: AtomicI32,
 }
@@ -71,13 +73,18 @@ impl Settings {
     pub fn new() -> Self {
         Settings {
             // Initialize to 80 degrees.
-            activation_temp: AtomicI32::new(80),
+            fan_activation_temp: AtomicI32::new(80),
+            fan_override: FanOverride::None,
             revision_num: AtomicI32::new(0),
         }
     }
 
-    pub fn activation_temp(&self) -> i32 {
-        self.activation_temp.load(Ordering::SeqCst)
+    pub fn fan_activation_temp(&self) -> i32 {
+        self.fan_activation_temp.load(Ordering::SeqCst)
+    }
+
+    pub fn fan_override(&self) -> FanOverride {
+        self.fan_override
     }
 
     pub fn revision_num(&self) -> i32 {
@@ -85,8 +92,15 @@ impl Settings {
     }
 
     pub fn set_activation_temp(&self, value: i32) {
-        self.activation_temp.store(value, Ordering::SeqCst);
+        self.fan_activation_temp.store(value, Ordering::SeqCst);
         self.revision_num
             .store(self.revision_num() + 1, Ordering::SeqCst);
     }
+}
+
+#[derive(Copy, Clone, Serialize)]
+pub enum FanOverride {
+    None,
+    On,
+    Off,
 }
