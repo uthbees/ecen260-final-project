@@ -125,6 +125,9 @@ function postTemperature(
 ) {
     fetch(`${API_URL}/sensor_data`, {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify(temperature),
     }).then((response) => {
         if (!response.ok) {
