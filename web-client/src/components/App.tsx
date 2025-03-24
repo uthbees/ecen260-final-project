@@ -50,7 +50,7 @@ export default function App() {
     );
 
     useInitialSetup(() =>
-        longPoll(`${API_URL}/temperature`, handleUpdateTemperature, setError),
+        longPoll(`${API_URL}/sensor_data`, handleUpdateTemperature, setError),
     );
 
     return (
@@ -123,7 +123,7 @@ function postTemperature(
     temperature: number,
     setError: (error: AppError | null) => void,
 ) {
-    fetch(`${API_URL}/temperature`, {
+    fetch(`${API_URL}/sensor_data`, {
         method: 'POST',
         body: JSON.stringify(temperature),
     }).then((response) => {

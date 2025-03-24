@@ -3,10 +3,10 @@ use axum::{Extension, Router};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 use web_server::endpoints::get_sensor_data::sensor_data_get_endpoint;
+use web_server::endpoints::get_settings::settings_get_endpoint;
 use web_server::endpoints::post_sensor_data::sensor_data_post_endpoint;
-use web_server::endpoints::settings_get_endpoint::settings_get_endpoint;
-use web_server::endpoints::settings_post_endpoint::settings_post_endpoint;
-use web_server::server_context::ServerContext;
+use web_server::endpoints::post_settings::settings_post_endpoint;
+use web_server::server_context::ServerState;
 
 #[tokio::main]
 async fn main() {
@@ -15,7 +15,7 @@ async fn main() {
         .route("/sensor_data", post(sensor_data_post_endpoint))
         .route("/settings", get(settings_get_endpoint))
         .route("/settings", post(settings_post_endpoint))
-        .layer(Extension(Arc::new(RwLock::new(ServerContext::new()))));
+        .layer(Extension(Arc::new(RwLock::new(ServerState::new()))));
 
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3000")
         .await

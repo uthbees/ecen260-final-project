@@ -1,4 +1,4 @@
 pub mod get_sensor_data;
+pub mod get_settings;
 pub mod post_sensor_data;
-pub mod settings_get_endpoint;
-pub mod settings_post_endpoint;
+pub mod post_settings;
