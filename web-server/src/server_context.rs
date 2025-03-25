@@ -36,7 +36,7 @@ impl Temperature {
     pub fn new(value: i32) -> Self {
         Temperature {
             value,
-            revision_num: 0,
+            revision_num: 0, // Start at version 0 because we don't have a default value
         }
     }
 
@@ -75,7 +75,7 @@ impl Settings {
             // Initialize to 80 degrees.
             fan_activation_temp: 80,
             fan_override: FanOverride::None,
-            revision_num: 0,
+            revision_num: 1, // Start at version 1 because we have a default value
         }
     }
 
