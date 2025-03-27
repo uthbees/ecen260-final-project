@@ -31,3 +31,4 @@ cortex-m = { version = "0.7.7", features = ["critical-section-single-core", "inl
 cortex-m-rt = "0.7.5"
 embassy-stm32 = { version = "0.2.0", features = ["stm32l476rg", "unstable-pac", "time-driver-any", "exti"] }
 embassy-time = { version = "0.4.0", features = ["tick-hz-32_768", "generic-queue-8"] }
+embedded-alloc = "0.6.0"

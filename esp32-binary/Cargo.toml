@@ -16,7 +16,12 @@ default = []
 experimental = ["esp-idf-svc/experimental"]
 
 [dependencies]
+dotenv_codegen = "0.15.0"
+embedded-svc = "0.28.1"
 esp-idf-svc = { version = "0.51", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
+anyhow = "1.0.95"
+esp-idf-hal = "0.45.2"
+futures = "0.3.31"
 
 [build-dependencies]
 embuild = "0.33"
